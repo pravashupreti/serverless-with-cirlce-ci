@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  build-and-test:
     working_directory: ~/hello-world-ci
 
     docker:
@@ -32,13 +32,52 @@ jobs:
           name: Run tests with code coverage
           command: npm test --coverage
 
-      # deploy app            
-      - run:
-          name: Deploy application 
-          command: serverless deploy -v --region $AWS_DEFAULT_REGION
-
       - save_cache:
           paths:
             - node_modules
           key: dependencies-cache-{{ checksum "package.json" }}
-        
+  
+  deploy:    
+    working_directory: ~/hello-world-ci
+
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependencies-cache-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependencies-cache
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+
+      # deploy app            
+      - run:
+          name: Deploy application 
+          command: serverless deploy -v  --stage $CIRCLE_BRANCH  --region $AWS_DEFAULT_REGION
+
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-and-test
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - master
