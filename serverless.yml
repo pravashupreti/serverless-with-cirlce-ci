@@ -16,7 +16,7 @@ package:
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
-  runtime: nodejs10
+  runtime: nodejs10.x
 
 # The `functions` block defines what code to deploy
 functions:
