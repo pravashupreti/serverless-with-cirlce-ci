@@ -35,7 +35,7 @@ jobs:
       # deploy app            
       - run:
           name: Deploy application 
-          command: sls deploy -v
+          command: sls deploy -v --region $AWS_DEFAULT_REGION
 
       - save_cache:
           paths:
