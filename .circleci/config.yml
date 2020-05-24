@@ -37,13 +37,7 @@ jobs:
             - node_modules
           key: dependencies-cache-{{ checksum "package.json" }}
   
-  deploy:
-    filters:
-      branches:
-        only:
-          - dev
-          - stage
-          - master
+  deploy:    
     working_directory: ~/hello-world-ci
 
     docker:
@@ -75,3 +69,19 @@ jobs:
       - run:
           name: Deploy application 
           command: serverless deploy -v  --stage $CIRCLE_BRANCH  --region $AWS_DEFAULT_REGION
+
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-and-test
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - dev
+                - stage
+                - master
