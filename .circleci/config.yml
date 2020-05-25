@@ -22,9 +22,8 @@ jobs:
             - dependencies-cache
 
       - run:
-          name: Install Serverless CLI and dependencies
+          name: Install dependencies
           command: |
-            sudo npm i -g serverless
             npm install
 
       # run tests
@@ -58,7 +57,13 @@ jobs:
           name: Install Serverless CLI and dependencies
           command: |
             sudo npm i -g serverless
+            sudo npm install -g js-yaml
             npm install
+
+      # compile cred      
+      - run:
+          name: Building environment file 
+          command: node compile-cred.js && cat env.yml
 
 
       # deploy app            
