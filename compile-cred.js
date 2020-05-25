@@ -23,12 +23,18 @@ for (i in keys){
     console.log(`Searching the key ${keyToBeSearch} ...`)
     let value = process.env[keyToBeSearch]
     if ( value != null){
-        data[keys[i]]=JSON.parse(value)
-        console.log(`Updated ${keys[i]}`)
+        try{
+            data[keys[i]]=JSON.parse(value)
+            console.log(`Updated ${keys[i]}`)
+        } catch (e) {
+            console.log(e);
+        }
     }else{
         console.log(`${keys[i]} not found in environment`)
     }
 }
+
+console.log(data)
 
 let yamlStr = yaml.safeDump(data);
 fs.writeFileSync('env.yml', yamlStr, 'utf8');
