@@ -18,5 +18,17 @@ console.log(keys)
 
 var branch = process.env.CIRCLE_BRANCH
 
+for (i in keys){
+    let keyToBeSearch = `${branch}_${keys[i]}`.toUpperCase()
+    console.log(`Searching the key ${keyToBeSearch} ...`)
+    let value = process.env[keyToBeSearch]
+    if ( value != null){
+        data[key]=JSON.parse(value)
+        console.log(`Updated ${keys[i]}`)
+    }else{
+        console.log(`${keys[i]} not found in environment`)
+    }
+}
+
 let yamlStr = yaml.safeDump(data);
 fs.writeFileSync('env.yml', yamlStr, 'utf8');
