@@ -25,8 +25,9 @@ for (i in keys){
     if ( value != null){
         try{
             let isKeyValue=false;
+            let stringValue
             try{
-            let stringValue = JSON.parse(value)
+                stringValue = JSON.parse(value)
             }catch(e){
                 isKeyValue=true
             }
