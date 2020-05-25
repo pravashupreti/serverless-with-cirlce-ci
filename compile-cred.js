@@ -24,8 +24,25 @@ for (i in keys){
     let value = process.env[keyToBeSearch]
     if ( value != null){
         try{
-            data[keys[i]]=JSON.parse(JSON.parse(value))
-            console.log(`Updated ${keys[i]}`)
+            let isKeyValue=false;
+            try{
+            let stringValue = JSON.parse(value)
+            }catch(e){
+                isKeyValue=true
+            }
+            
+            if(isKeyValue){
+                data[keys[i]]=value
+                console.log(`Updated ${keys[i]}`)
+            }else{
+                try{
+                    data[keys[i]]=JSON.parse(stringValue)
+                    console.log(`Updated ${keys[i]}`)
+                }catch(e){
+                    console.log(e)
+                }
+            }
+
         } catch (e) {
             console.log(e);
         }
