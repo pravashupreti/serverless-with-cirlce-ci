@@ -73,7 +73,7 @@ jobs:
                   if [ $CIRCLE_BRANCH == "master" ]
                   then
                     export DEPLOYMENT_ENVIRONMENT=prod
-                  elif
+                  else
                     export DEPLOYMENT_ENVIRONMENT=$CIRCLE_BRANCH
                   fi 
                   serverless deploy -v  \
