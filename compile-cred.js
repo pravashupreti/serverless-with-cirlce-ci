@@ -23,7 +23,7 @@ for (i in keys){
     console.log(`Searching the key ${keyToBeSearch} ...`)
     let value = process.env[keyToBeSearch]
     if ( value != null){
-        data[key]=JSON.parse(value)
+        data[keys[i]]=JSON.parse(value)
         console.log(`Updated ${keys[i]}`)
     }else{
         console.log(`${keys[i]} not found in environment`)
