@@ -2,6 +2,13 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 
+function environment(){
+    var branch = process.env.CIRCLE_BRANCH
+    if (branch=="master")
+        return "prod"
+    return branch
+}
+
 var data
 
 try {
@@ -16,10 +23,11 @@ try {
 var keys = Object.keys(data);
 console.log(keys)
 
-var branch = process.env.CIRCLE_BRANCH
+
 
 for (i in keys){
-    let keyToBeSearch = `${branch}_${keys[i]}`.toUpperCase()
+    let env = environment()
+    let keyToBeSearch = `${env}_${keys[i]}`.toUpperCase()
     console.log(`Searching the key ${keyToBeSearch} ...`)
     let value = process.env[keyToBeSearch]
     if ( value != null){

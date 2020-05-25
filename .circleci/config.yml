@@ -66,11 +66,19 @@ jobs:
           command: node compile-cred.js && cat env.yml
 
 
-      ## Uncomment the below command after setting AWS credentials
       # deploy app            
-      # - run:
-      #     name: Deploy application 
-      #     command: serverless deploy -v  --stage $CIRCLE_BRANCH  --region $AWS_DEFAULT_REGION
+      - run:
+          name: Deploy application 
+          command: |
+                  if [ $CIRCLE_BRANCH == "master" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=prod
+                  elif
+                    export DEPLOYMENT_ENVIRONMENT=$CIRCLE_BRANCH
+                  fi 
+                  serverless deploy -v  \
+                      --stage $DEPLOYMENT_ENVIRONMENT \
+                      --region $AWS_DEFAULT_REGION
 
 
 workflows:
