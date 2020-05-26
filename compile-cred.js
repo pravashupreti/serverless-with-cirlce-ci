@@ -30,7 +30,7 @@ var keys = Object.keys(data);
 let env = environment()
 for (i in keys){
     let keyToBeSearch = `${env}_${keys[i]}`.toUpperCase()
-    console.log(`Searching the key ${keyToBeSearch} ...`)
+    //console.log(`Searching the key ${keyToBeSearch} ...`)
     
     // Get the value from
     let value = process.env[keyToBeSearch]
@@ -64,7 +64,7 @@ for (i in keys){
             console.log(e);
         }
     }else{
-        console.log(`${keys[i]} not found in environment`)
+        //console.log(`${keys[i]} not found in environment`)
         if(data[keys[i]]==null){
             data[keys[i]]=''
         }
