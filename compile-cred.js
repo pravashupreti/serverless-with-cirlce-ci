@@ -3,6 +3,11 @@ const yaml = require('js-yaml');
 
 function environment(){
     var branch = process.env.CIRCLE_BRANCH
+    
+    if(branch==null){
+        return "local"
+    }
+    
     if (branch=="master")
         return "prod"
     return branch
@@ -12,8 +17,9 @@ var data
 
 // Open the environment template file
 try {
-    let fileContents = fs.readFileSync('./example.env.yml', 'utf8');
-    data = yaml.safeLoad(fileContents);
+    let fileContents = fs.readFileSync('./env.yml', 'utf8');
+    loadedData = yaml.safeLoad(fileContents);
+    data = loadedData["local"]
 } catch (e) {
     console.log(e);
 }
@@ -59,9 +65,13 @@ for (i in keys){
         }
     }else{
         console.log(`${keys[i]} not found in environment`)
+        if(data[keys[i]]==null){
+            data[keys[i]]=''
+        }
     }
 }
 
 // Finally convert the json to yml and dump to env.yml file
-let yamlStr = yaml.safeDump(data);
+
+let yamlStr = yaml.safeDump({[env]:data});
 fs.writeFileSync('env.yml', yamlStr, 'utf8');
