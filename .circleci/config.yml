@@ -1,11 +1,39 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
-  build:
-    working_directory: ~/hello-world-ci
+  build-and-test:
+    working_directory: ~/clients_service
+
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependencies-cache-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependencies-cache
+
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+
+      # run tests
+      - run: 
+          name: Run tests with code coverage
+          command: npm test --coverage
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: dependencies-cache-{{ checksum "package.json" }}
+  
+  deploy:    
+    working_directory: ~/clients_service
 
     docker:
       # specify the version you desire here
@@ -25,20 +53,45 @@ jobs:
           name: Install Serverless CLI and dependencies
           command: |
             sudo npm i -g serverless
+            sudo npm install -g js-yaml
             npm install
 
-      # run tests
-      - run: 
-          name: Run tests with code coverage
-          command: npm test --coverage
+      # compile cred      
+      - run:
+          name: Building environment file 
+          command: node compile-cred.js && cat env.yml
+
 
       # deploy app            
       - run:
           name: Deploy application 
-          command: serverless deploy -v --region $AWS_DEFAULT_REGION
+          command: |
+                  if [ $CIRCLE_BRANCH == "master" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=prod
+                  elif [ $CIRCLE_BRANCH == "staging" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=stage                  
+                  elif [ $CIRCLE_BRANCH == "development" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=dev                  
+                  fi 
+                  serverless deploy -v  \
+                      --stage $DEPLOYMENT_ENVIRONMENT \
+                      --region $AWS_DEFAULT_REGION
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: dependencies-cache-{{ checksum "package.json" }}
-        
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-and-test
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - development
+                - staging
+                - master
