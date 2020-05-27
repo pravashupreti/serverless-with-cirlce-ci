@@ -71,8 +71,7 @@ jobs:
                     export DEPLOYMENT_ENVIRONMENT=prod
                   elif [ $CIRCLE_BRANCH == "staging" ]
                   then
-                    export DEPLOYMENT_ENVIRONMENT=stage
-                  else
+                    export DEPLOYMENT_ENVIRONMENT=stage                  
                   elif [ $CIRCLE_BRANCH == "development" ]
                   then
                     export DEPLOYMENT_ENVIRONMENT=dev                  
