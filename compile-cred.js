@@ -10,7 +10,13 @@ function environment(){
     
     if (branch=="master")
         return "prod"
-    return branch
+
+    if (branch=="staging")
+        return "stage"
+
+    if (branch=="development")
+        return "dev"
+
 }
 
 var data

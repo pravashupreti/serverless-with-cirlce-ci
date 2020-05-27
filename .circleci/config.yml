@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build-and-test:
-    working_directory: ~/hello-world-ci
+    working_directory: ~/clients_service
 
     docker:
       # specify the version you desire here
@@ -25,7 +25,7 @@ jobs:
       # run tests
       - run: 
           name: Run tests with code coverage
-          command: npm test --coverage
+          #command: npm test --coverage
 
       - save_cache:
           paths:
@@ -33,7 +33,7 @@ jobs:
           key: dependencies-cache-{{ checksum "package.json" }}
   
   deploy:    
-    working_directory: ~/hello-world-ci
+    working_directory: ~/clients_service
 
     docker:
       # specify the version you desire here
@@ -69,8 +69,13 @@ jobs:
                   if [ $CIRCLE_BRANCH == "master" ]
                   then
                     export DEPLOYMENT_ENVIRONMENT=prod
+                  elif [ $CIRCLE_BRANCH == "staging" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=stage
                   else
-                    export DEPLOYMENT_ENVIRONMENT=$CIRCLE_BRANCH
+                  elif [ $CIRCLE_BRANCH == "development" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=dev                  
                   fi 
                   serverless deploy -v  \
                       --stage $DEPLOYMENT_ENVIRONMENT \
@@ -88,6 +93,6 @@ workflows:
           filters:
             branches:
               only:
-                - dev
-                - stage
+                - development
+                - staging
                 - master
