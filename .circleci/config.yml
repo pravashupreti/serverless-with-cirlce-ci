@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Building environment file 
           command: |
-            export NODE_PATH=$(npm root --quiet -g) \
+            export NODE_PATH=$(npm root --quiet -g)
             node compile-cred.js
             cat env.yml
 
