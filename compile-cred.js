@@ -1,5 +1,5 @@
 const fs = require('fs');
-const yaml = require('js-yaml');
+const yaml = require(`${process.env.NODE_PATH}/js-yaml`);
 
 function environment(){
     var branch = process.env.CIRCLE_BRANCH
