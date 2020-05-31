@@ -92,6 +92,10 @@ var envVariables = Object.keys(process.env)
 for(i in envVariables){
     if(envVariables[i].startsWith(`${env}_`)){
         let key = envVariables[i].replace(`${env}_`,'')
+        
+        if(data.hasOwnProperty(key))
+            continue
+        
         console.log(`Adding new key :  ${key}`)
         data[key]=process.env[envVariables[i]]
     }
