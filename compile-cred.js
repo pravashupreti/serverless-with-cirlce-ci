@@ -87,8 +87,9 @@ for (i in keys){
 }
 
 // Loop to add environment variable which are not in .env.yml 
+env = env.toUpperCase()
 for(i in process.env){
-    env = env.toUpperCase()
+    console.log(process.env[i])
     if(process.env[i].startsWith(`${env}_`)){
         let key = process.env[i].replace(`${env}_`,'')
         console.log(`Adding new key :  ${key}`)
