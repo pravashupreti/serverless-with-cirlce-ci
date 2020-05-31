@@ -88,11 +88,12 @@ for (i in keys){
 
 // Loop to add environment variable which are not in .env.yml 
 env = env.toUpperCase()
-for(i in process.env){
-    if(process.env[i].startsWith(`${env}_`)){
-        let key = process.env[i].replace(`${env}_`,'')
+var envVariables = Object.keys(process.env)
+for(i in envVariables){
+    if(envVariables[i].startsWith(`${env}_`)){
+        let key = envVariables[i].replace(`${env}_`,'')
         console.log(`Adding new key :  ${key}`)
-        data[key]=process.env[i]
+        data[key]=process.env[envVariables[i]]
     }
 }
 
