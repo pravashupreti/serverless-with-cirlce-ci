@@ -31,9 +31,18 @@ try {
 }
 
 // List out the keys used on yml file. This are first level attribute of json data
-var keys = Object.keys(data);
+var keys = []
+try{
+    keys= Object.keys(data);
+}catch(e){
+    console.log("No keys present on .env")
+    console.log(fileContents)
+    console.log(e)
+}
 
 let env = environment()
+
+// Loop to overwrite a value from environment
 for (i in keys){
     let keyToBeSearch = `${env}_${keys[i]}`.toUpperCase()
     //console.log(`Searching the key ${keyToBeSearch} ...`)
@@ -74,6 +83,15 @@ for (i in keys){
         if(data[keys[i]]==null){
             data[keys[i]]=''
         }
+    }
+}
+
+// Loop to add environment variable which are not in .env.yml 
+for(i in process.env){
+    if(process.env[i].startsWith(`${env}_`)){
+        let key = process.env[i].replace(`${env}_`,'')
+        console.log(`Adding new key :  ${key}`)
+        data[key]=process.env[i]
     }
 }
 
