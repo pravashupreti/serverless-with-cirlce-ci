@@ -59,7 +59,10 @@ jobs:
       # compile cred      
       - run:
           name: Building environment file 
-          command: node compile-cred.js && cat env.yml
+          command: |
+            export NODE_PATH=$(npm root --quiet -g)
+            node compile-cred.js
+            cat env.yml
 
 
       # deploy app            
