@@ -1,11 +1,7 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2
 jobs:
   build-and-test:
-    working_directory: ~/hello-world-ci
+    working_directory: ~/clients_service
 
     docker:
       # specify the version you desire here
@@ -22,9 +18,8 @@ jobs:
             - dependencies-cache
 
       - run:
-          name: Install Serverless CLI and dependencies
+          name: Install dependencies
           command: |
-            sudo npm i -g serverless
             npm install
 
       # run tests
@@ -38,7 +33,7 @@ jobs:
           key: dependencies-cache-{{ checksum "package.json" }}
   
   deploy:    
-    working_directory: ~/hello-world-ci
+    working_directory: ~/clients_service
 
     docker:
       # specify the version you desire here
@@ -58,13 +53,35 @@ jobs:
           name: Install Serverless CLI and dependencies
           command: |
             sudo npm i -g serverless
+            sudo npm install -g js-yaml
             npm install
+
+      # compile cred      
+      - run:
+          name: Building environment file 
+          command: |
+            export NODE_PATH=$(npm root --quiet -g)
+            node compile-cred.js
+            cat env.yml
 
 
       # deploy app            
       - run:
           name: Deploy application 
-          command: serverless deploy -v  --stage $CIRCLE_BRANCH  --region $AWS_DEFAULT_REGION
+          command: |
+                  if [ $CIRCLE_BRANCH == "master" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=prod
+                  elif [ $CIRCLE_BRANCH == "staging" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=stage                  
+                  elif [ $CIRCLE_BRANCH == "development" ]
+                  then
+                    export DEPLOYMENT_ENVIRONMENT=dev                  
+                  fi 
+                  serverless deploy -v  \
+                      --stage $DEPLOYMENT_ENVIRONMENT \
+                      --region $AWS_DEFAULT_REGION
 
 
 workflows:
@@ -78,6 +95,6 @@ workflows:
           filters:
             branches:
               only:
-                - dev
-                - stage
+                - development
+                - staging
                 - master
