@@ -136,5 +136,7 @@ for(i in envVariables){
 
 // Finally convert the json to yml and dump to env.yml file
 
+env = env.toLowerCase()
+
 let yamlStr = yaml.safeDump({[env]:data});
 fs.writeFileSync('env.yml', yamlStr, 'utf8');
