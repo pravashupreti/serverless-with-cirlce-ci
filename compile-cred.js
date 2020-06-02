@@ -20,10 +20,11 @@ function environment(){
 }
 
 var data
+var fileContents
 
 // Open the environment template file
 try {
-    let fileContents = fs.readFileSync('./env.yml', 'utf8');
+    fileContents = fs.readFileSync('./env.yml', 'utf8');
     loadedData = yaml.safeLoad(fileContents);
     data = loadedData["local"]
 } catch (e) {
