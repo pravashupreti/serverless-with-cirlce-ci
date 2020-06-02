@@ -26,7 +26,7 @@ var fileContents
 try {
     fileContents = fs.readFileSync('./env.yml', 'utf8');
     loadedData = yaml.safeLoad(fileContents);
-    data = loadedData["local"]
+    data = loadedData["dev"]
 } catch (e) {
     console.log(e);
 }
